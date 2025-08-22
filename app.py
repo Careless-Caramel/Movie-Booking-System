@@ -39,8 +39,8 @@ def load_user(user_id):
 # ---------------------------
 # TMDb config
 # ---------------------------
-TMDB_API_KEY = "2d931dde2800cfbee8ed452b1a4173e7"
-API_KEY = os.getenv("TMDB_API_KEY") or "2d931dde2800cfbee8ed452b1a4173e7"
+TMDB_API_KEY = "your-api-key"
+API_KEY = os.getenv("TMDB_API_KEY") or "your-api-key"
 BASE_URL = "https://api.themoviedb.org/3"
 
 CACHE_DIR = Path("cache")
@@ -314,3 +314,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True, port=2000)
+
