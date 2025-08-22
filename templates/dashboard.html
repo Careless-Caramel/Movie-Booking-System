@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-2">
+  <h2 class="text-3xl font-extrabold text-pink-400">🎟️ Your Bookings, {{ current_user.name }}</h2>
+</div>
+
+{% if bookings %}
+<div class="space-y-6">
+  {% for b in bookings %}
+  <div class="flex flex-col sm:flex-row items-start gap-4">
+
+
+    <!-- Ticket (Sample Style) -->
+    <div class="relative bg-white text-gray-900 rounded-2xl shadow-2xl px-8 py-6 w-full max-w-2xl border-4 border-dashed border-pink-400 ticket-shape">
+      <div class="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-pink-400"></div>
+      <div class="absolute -right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-pink-400"></div>
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex-1">
+          <h3 class="text-2xl font-extrabold text-pink-600 mb-1">🎟️ {{ b.movie_title }}</h3>
+          <div class="text-sm text-gray-500 mb-2">Booked on: {{ b.created_at.strftime('%b %d, %Y %H:%M') if b.created_at else "N/A" }}</div>
+          <div class="text-base"><span class="font-bold">Showtime:</span> <span class="text-pink-500">{{ b.showtime }}</span></div>
+          <div class="text-base"><span class="font-bold">Seats:</span> <span class="text-pink-500">{{ b.seats }}</span></div>
+          <div class="text-base"><span class="font-bold">Date:</span> <span class="text-pink-500">{{ b.date }}</span></div>
+          <div class="text-base"><span class="font-bold">Booked by:</span> <span class="text-pink-500">{{ b.name }}</span></div>
+          <div class="text-base"><span class="font-bold">Status:</span> <span class="text-green-600 font-semibold">✅ Confirmed</span></div>
+        </div>
+        <div class="flex flex-col items-center">
+          <img src="{{ b.poster_url or '/static/img/placeholder.png' }}" alt="{{ b.movie_title }} poster" class="w-24 h-36 object-cover rounded-lg border border-pink-200 shadow" />
+          <div class="mt-2 text-xs text-gray-400">Ticket ID: <span class="font-mono">#{{ b.movie_id }}--{{ b.id }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancel Button Outside -->
+    <div class="flex-shrink-0 mt-2 sm:mt-0">
+      <form method="POST" action="{{ url_for('cancel_booking', booking_id=b.id) }}">
+        <button type="submit"
+          class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition">
+          ❌ Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center mt-10">
+  <p class="text-gray-400 text-lg">😢 You haven’t booked anything yet.</p>
+  <a href="{{ url_for('index') }}"
+    class="mt-4 inline-block px-6 py-2 bg-pink-600 hover:bg-pink-700 rounded-xl text-white font-medium transition">
+    🎬 Browse Movies
+  </a>
+</div>
+{% endif %}
+
+<!-- Mascot animation -->
+<div class="mascot"></div>
+
+<style>
+  .ticket-shape {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    position: relative;
+    overflow: visible;
+  }
+
+  .ticket-shape::before,
+  .ticket-shape::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    border: 4px dashed #ec4899;
+    z-index: 2;
+  }
+
+  .ticket-shape::before {
+    left: -32px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ticket-shape::after {
+    right: -32px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .mascot {
+    position: fixed;
+    bottom: 20px;
+    left: -80px;
+    width: 60px;
+    height: 60px;
+    background: url('/static/img/mascot.png') no-repeat center/contain;
+    animation: runAcross 15s linear infinite;
+  }
+
+  @keyframes runAcross {
+    0% {
+      left: -80px;
+      transform: scaleX(1);
+    }
+
+    40% {
+      left: 100vw;
+      transform: scaleX(1);
+    }
+
+    50% {
+      left: 100vw;
+      transform: scaleX(-1);
+    }
+
+    90% {
+      left: -80px;
+      transform: scaleX(-1);
+    }
+
+    100% {
+      left: -80px;
+      transform: scaleX(1);
+    }
+  }
+
+  .booking-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+  }
+
+  .booking-card:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+
+  .booking-card:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+
+  .booking-card:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+  <div id="popupBox" class="relative bg-white rounded-2xl shadow-2xl px-8 py-7 w-full max-w-md text-center border-4 border-pink-400 opacity-0 scale-75 translate-y-10 transition-all duration-1000 ease-out">
+    <div class="absolute -top-8 left-1/2 -translate-x-1/2">
+      <span class="text-5xl animate-bounce">
+        {% if message_type == 'success' %}🍿{% elif message_type == 'error' %}❌{% elif message_type == 'warning' %}⚠️{% else %}🎬{% endif %}
+      </span>
+    </div>
+    <h2 class="text-2xl font-bold text-pink-600 mb-2 mt-6">{{ message or 'Booking Cancelled' }}</h2>
+    <p class="text-gray-600 mb-6">Your ticket has been released. But the show must go on! 🎬</p>
+  <a href="{{ url_for('dashboard') }}" class="inline-block px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl shadow-lg transition">🏠 Back to Dashboard</a>
+  </div>
+</div>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const box = document.getElementById("popupBox");
+    setTimeout(() => {
+      box.classList.remove("opacity-0", "scale-75", "translate-y-10");
+      box.classList.add("opacity-100", "scale-100", "translate-y-0");
+    }, 200);
+    setTimeout(() => {
+      window.location.href = "{{ url_for('dashboard') }}";
+    }, 1200); // 1 second after popup appears
+  });
+</script>
+{% endblock %}

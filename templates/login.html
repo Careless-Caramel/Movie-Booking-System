@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="login-wrapper">
+  <div class="login-card">
+    <h1 class="login-title" id="welcome-back-msg">Welcome Back 🎬</h1>
+    <p class="login-subtitle">Login to manage your bookings</p>
+
+    {% if message %}
+      <div class="flash-message flash-{{ message_type|default('info') }}" style="margin-bottom:1rem;">{{ message }}</div>
+    {% endif %}
+    <form method="post" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <p class="signup-text">
+      Don’t have an account? <a href="{{ url_for('register') }}">Register here</a>
+    </p>
+  </div>
+</div>
+<script>
+  // Hide the welcome message after 3 seconds
+  setTimeout(function() {
+    var msg = document.getElementById('welcome-back-msg');
+    if (msg) { msg.style.display = 'none'; }
+  }, 3000);
+</script>
+{% endblock %}

@@ -1,0 +1,521 @@
+:root {
+  --bg: #0b0f14;
+  --surface: #11161d;
+  --muted: #94a3b8;
+  --text: #e2e8f0;
+  --brand: #4f46e5;
+  --accent: #22d3ee;
+}
+
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  height: 100%
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 20% -10%, #111827 0%, transparent 50%), var(--bg);
+  color: var(--text);
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin-inline: auto
+}
+
+/* Nav */
+.nav {
+  position: sticky;
+  top: 0;
+  backdrop-filter: saturate(140%) blur(10px);
+  background: rgba(10, 14, 20, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: .4px
+}
+
+.links a {
+  margin-left: 18px;
+  text-decoration: none;
+  color: var(--text)
+}
+
+.links a.muted {
+  color: var(--muted)
+}
+
+.links a[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 600
+}
+
+/* Hero */
+.hero {
+  padding: 28px 0 8px
+}
+
+.hero h1 {
+  font-size: clamp(28px, 3vw, 36px);
+  margin: 0 0 6px
+}
+
+.hero .sub {
+  color: var(--muted);
+  margin: 0
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  padding: 18px 0 40px
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.00));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35)
+}
+
+.poster {
+  aspect-ratio: 2/3;
+  background: radial-gradient(600px 300px at -10% -10%, rgba(79, 70, 229, .25), transparent 60%), var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover
+}
+
+.card-body {
+  padding: 14px
+}
+
+.card-title {
+  margin: 8px 0 6px;
+  font-size: 18px
+}
+
+.meta {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 14px
+}
+
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px
+}
+
+.time {
+  display: inline-block;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  color: var(--text)
+}
+
+.time:hover {
+  border-color: rgba(34, 211, 238, .7)
+}
+
+.btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+  color: #0b0f14;
+  border: none;
+  font-weight: 700;
+  cursor: not-allowed;
+  opacity: .75
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 24px 0;
+  color: var(--muted)
+}
+.movie-details {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  margin: 20px 0;
+}
+
+.movie-details .poster img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.movie-details .info {
+  background: var(--surface);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #0f172a;
+  color: var(--text);
+}
+
+.genre-block {
+  margin: 3rem 0;
+}
+
+.genre-title {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-align: left;
+}
+
+/* Reel container */
+.film-reel {
+  position: relative;
+  overflow: hidden;
+  border-top: 8px solid #555;
+  border-bottom: 8px solid #555;
+  padding: 10px 0;
+  background: #111;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Track that scrolls */
+.reel-track {
+  display: flex;
+  gap: 1rem;
+  animation: reel-scroll 40s linear infinite;
+}
+
+/* Each movie card */
+.reel-card {
+  flex: 0 0 auto;
+  width: 140px;
+  border: 4px solid #222;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.reel-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Continuous scroll animation */
+@keyframes reel-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Film reel holes effect (top & bottom) */
+.film-reel::before,
+.film-reel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background-image: radial-gradient(circle, #222 40%, transparent 41%);
+  background-size: 40px 20px;
+  z-index: 2;
+}
+
+.film-reel::before {
+  top: -20px;
+}
+
+.film-reel::after {
+  bottom: -20px;
+  transform: rotate(180deg);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  animation: fadeOut 3s forwards;
+  animation-delay: 2.0s;
+  /* overlay fades after animation */
+}
+
+.checkmark-wrapper {
+  text-align: center;
+  color: #28a745;
+  font-size: 1.5rem;
+}
+
+.checkmark {
+  width: 80px;
+  height: 80px;
+  stroke: #28a745;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 20px;
+  animation: scale .3s ease-in-out .9s both;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke: #28a745;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(.65, .0, .45, 1) forwards;
+}
+
+.checkmark-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(.65, .0, .45, 1) 0.6s forwards;
+}
+/* ✅ Showtimes styled as pill buttons */
+.showtime-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.showtime-options input[type="radio"] {
+  display: none;
+}
+
+.showtime-options label {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #eee;
+  padding: 0.9rem 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+}
+
+.showtime-options label span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 0.2rem;
+}
+
+.showtime-options label:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transform: translateY(-2px);
+}
+
+.showtime-options input[type="radio"]:checked+label {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+}
+@keyframes stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+a, .btn {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Center the login card */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #111;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 5px #00d4ff;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #00d4ff, #0066ff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 212, 255, 0.5);
+}
+
+.signup-text {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.signup-text a {
+  color: #00d4ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+/* subtle fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Register button special style */
+.register-page .btn {
+  background: linear-gradient(135deg, #00ff95, #00cc66);
+  box-shadow: 0 6px 18px rgba(0, 255, 149, 0.4);
+}
+
+.register-page .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 255, 149, 0.6);
+}

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <h1>{{ movie.title }}</h1>
+  <p class="sub">{{ movie.release_date }} • ⭐ {{ movie.vote_average }}/10</p>
+</section>
+
+<div class="movie-details">
+  <div class="poster">
+    {% if movie.poster_path %}
+    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }} poster" />
+    {% else %}
+    <img src="https://via.placeholder.com/500x750?text=No+Poster" alt="Poster placeholder" />
+    {% endif %}
+  </div>
+
+  <div class="info">
+    <h2 style="color:#ec4899; font-weight:800; letter-spacing:1px;">Overview</h2>
+    <p>{{ movie.overview or "No description available." }}</p>
+
+    <h2 style="color:#ec4899; font-weight:800; letter-spacing:1px;">Book Tickets</h2>
+    <form method="POST" class="booking-form">
+      <div class="form-group">
+        <label>Select Date</label>
+        <div id="calendar-grid" style="display:flex;gap:0.5rem;margin:0.5rem 0;flex-wrap:wrap;"></div>
+        <input type="hidden" id="date" name="date" required>
+        <div id="date-status" style="margin-top:0.5rem;font-weight:600;"></div>
+      </div>
+
+      <input type="hidden" name="movie_title" value="{{ movie.title }}" />
+
+      <div class="form-group flex items-end gap-4 mb-4">
+        <div class="flex flex-col">
+          <label for="seats" class="mb-1">Seats</label>
+          <input type="number" id="seats" name="seats" min="1" value="1" required
+            class="w-16 px-2 py-1 rounded-lg border border-gray-300 focus:border-pink-400 focus:ring-pink-200 focus:ring-2 text-center" />
+        </div>
+        <div class="flex flex-col flex-1">
+          <label class="mb-1">Showtime</label>
+          <div class="flex gap-2 showtime-options">
+            {% for time, label in [("10:00","Morning"),("14:00","Matinee"),("19:00","Evening"),("22:00","Premier")] %}
+            <div>
+              <input type="radio" id="show-{{ loop.index }}" name="showtime" value="{{ time }}" required>
+              <label for="show-{{ loop.index }}"
+                class="inline-block px-3 py-2 rounded-lg bg-gray-800 text-white hover:bg-pink-600 cursor-pointer text-xs">
+                {{ label }}<br><span class="text-pink-300">{{ time }}</span>
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button class="btn">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="success-overlay" style="display:none;">
+  <div class="checkmark-wrapper">
+    <svg class="checkmark" viewBox="0 0 52 52">
+      <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+      <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
+    </svg>
+    <p>Booking Successful!</p>
+  </div>
+</div>
+
+<!-- Ticket Preview -->
+<div class="flex justify-center mt-10">
+  <div
+    class="relative bg-white text-gray-900 rounded-2xl shadow-2xl px-8 py-6 w-full max-w-lg border-4 border-dashed border-pink-400 ticket-shape">
+    <div class="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-pink-400">
+    </div>
+    <div class="absolute -right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-pink-400">
+    </div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex-1">
+        <h3 class="text-2xl font-extrabold text-pink-600 mb-1">🎟️ Sample Ticket</h3>
+        <div class="text-lg font-semibold">{{ movie.title }}</div>
+        <div class="text-sm text-gray-500 mb-2">{{ movie.release_date }}</div>
+        <div class="text-base"><span class="font-bold">Showtime:</span> <span class="text-pink-500"
+            id="ticket-showtime">-</span></div>
+        <div class="text-base"><span class="font-bold">Seats:</span> <span class="text-pink-500"
+            id="ticket-seats">1</span></div>
+        <div class="text-base"><span class="font-bold">Date:</span> <span class="text-pink-500"
+            id="ticket-date">-</span></div>
+        <div class="text-base"><span class="font-bold">Booked by:</span> <span class="text-pink-500">{{
+            current_user.name }}</span></div>
+      </div>
+      <div class="flex flex-col items-center">
+        <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" alt="{{ movie.title }} poster"
+          class="w-24 h-36 object-cover rounded-lg border border-pink-200 shadow" />
+        <div class="mt-2 text-xs text-gray-400">Ticket ID: <span class="font-mono" id="ticket-id">#{{ movie.id
+            }}--</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ticket-shape {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    position: relative;
+    overflow: visible;
+  }
+
+  .ticket-shape::before,
+  .ticket-shape::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    border: 4px dashed #ec4899;
+    z-index: 2;
+  }
+
+  .ticket-shape::before {
+    left: -32px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ticket-shape::after {
+    right: -32px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .checkmark-wrapper {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    stroke: #22c55e;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    margin-bottom: 1rem;
+    animation: stroke 0.5s ease forwards;
+  }
+
+  @keyframes stroke {
+    0% {
+      stroke-dasharray: 0, 100;
+    }
+
+    100% {
+      stroke-dasharray: 100, 0;
+    }
+  }
+</style>
+
+<script>
+  // Calendar
+  const availableDates = {{ available_dates| tojson | safe }};
+  const calendarGrid = document.getElementById('calendar-grid');
+  const dateInput = document.getElementById('date');
+  const dateStatus = document.getElementById('date-status');
+
+  function formatDateLabel(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  if (calendarGrid && dateInput) {
+    for (let i = 0; i < availableDates.length; i++) {
+      const d = availableDates[i];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = formatDateLabel(d);
+      btn.dataset.date = d;
+      btn.style.padding = '0.7rem 1.1rem';
+      btn.style.borderRadius = '8px';
+      btn.style.border = 'none';
+      btn.style.fontWeight = '600';
+      btn.style.cursor = 'pointer';
+      btn.style.background = '#22c55e';
+      btn.style.color = '#fff';
+      btn.style.transition = 'box-shadow 0.2s, outline 0.2s';
+      btn.className = 'calendar-date-btn';
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.calendar-date-btn').forEach(b => b.style.outline = 'none');
+        btn.style.outline = '3px solid #ff4081';
+        dateInput.value = d;
+        // dateStatus.textContent = 'Available!';
+        // dateStatus.style.color = '#22c55e';
+        updateTicketPreview();
+      });
+      calendarGrid.appendChild(btn);
+    }
+  }
+
+  // Ticket Preview
+  function updateTicketPreview() {
+    const seats = document.getElementById('seats').value;
+    const showtime = document.querySelector('input[name="showtime"]:checked');
+    const date = document.getElementById('date').value;
+    document.getElementById('ticket-seats').textContent = seats || '1';
+    document.getElementById('ticket-showtime').textContent = showtime ? showtime.value : '-';
+    document.getElementById('ticket-date').textContent = date || '-';
+    document.getElementById('ticket-id').textContent = `#{{ movie.id }}-${showtime ? showtime.value : ''}-${date || ''}`;
+  }
+
+  document.getElementById('seats').addEventListener('input', updateTicketPreview);
+  document.querySelectorAll('input[name="showtime"]').forEach(r => r.addEventListener('change', updateTicketPreview));
+  updateTicketPreview();
+
+  const bookingForm = document.querySelector('.booking-form');
+  const successOverlay = document.getElementById('success-overlay');
+
+  bookingForm.addEventListener('submit', function(e) {
+    e.preventDefault(); // prevent form from submitting immediately
+
+    // Show overlay
+    successOverlay.style.display = 'flex';
+    successOverlay.style.opacity = 0;
+    let opacity = 0;
+    const fadeIn = setInterval(() => {
+      opacity += 0.05;
+      successOverlay.style.opacity = opacity;
+      if (opacity >= 1) clearInterval(fadeIn);
+    }, 20);
+
+    // After 2 seconds, fade out
+    setTimeout(() => {
+      let fadeOutOpacity = 1;
+      const fadeOut = setInterval(() => {
+        fadeOutOpacity -= 0.05;
+        successOverlay.style.opacity = fadeOutOpacity;
+        if (fadeOutOpacity <= 0) {
+          clearInterval(fadeOut);
+          successOverlay.style.display = 'none';
+        }
+      }, 20);
+    }, 2000);
+
+    // Optionally, submit form after overlay fades
+    setTimeout(() => {
+      bookingForm.submit();
+    }, 2200); // slightly after fade out
+  });
+
+</script>
+
+{% endblock %}

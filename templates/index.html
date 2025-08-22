@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<!-- Welcome Banner -->
+<section class="welcome-banner" style="margin-top:2rem; margin-bottom:2rem; text-align:center;">
+  <h1 style="font-size:2.5rem; font-weight:800; color:#ff4081; letter-spacing:2px; margin-bottom:0.5rem;">
+    Welcome to MovieBook!
+  </h1>
+  <p style="font-size:1.25rem; color:#e5e7eb; max-width:600px; margin:0 auto 1rem auto;">
+    Your one-stop destination for discovering, exploring, and booking the latest movies.<br>
+    <span style="color:#ffd700; font-weight:600;">Lights. Camera. Action. Book your seat now!</span>
+  </p>
+  <div style="font-size:1.5rem; color:#fff; margin-top:1rem;">
+    🍿 <span style="color:#ff4081;">New releases every week</span> &nbsp;|&nbsp; 🎟️ <span style="color:#ffd700;">Easy booking</span> &nbsp;|&nbsp; ⭐ <span style="color:#4ade80;">Top rated picks</span>
+  </div>
+</section>
+
+<!-- Google-style Search Bar -->
+<form method="get" action="{{ url_for('index') }}" style="display:flex;justify-content:center;margin-bottom:2.5rem;">
+  <input type="text" name="q" value="{{ search_query|default('') }}" placeholder="Search for a movie..." autocomplete="off"
+    style="width:60vw;max-width:600px;padding:1.1rem 2.5rem 1.1rem 2.5rem;border-radius:2rem;border:none;box-shadow:0 2px 12px #0002;font-size:1.2rem;outline:none;background:#fff;color:#222;transition:box-shadow 0.2s;"
+    class="search-input focus:shadow-lg" />
+  <button type="submit" style="margin-left:-3.5rem;background:none;border:none;outline:none;cursor:pointer;">
+    <svg width="28" height="28" fill="#ff4081" viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 1 1-15 0a7.5 7.5 0 0 1 15 0z" stroke="#ff4081" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</form>
+
+<!-- Search Results -->
+{% if search_query and search_results %}
+<section class="search-results" style="margin-bottom:2.5rem;">
+  <h2 style="font-size:1.3rem;color:#ff4081;font-weight:700;margin-bottom:1rem;text-align:center;">Search Results for "{{ search_query }}"</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;">
+    {% for m in search_results %}
+    <article class="reel-card" style="width:100px;">
+      <a href="{{ url_for('movie_page', movie_id=m.id) }}">
+        {% if m.poster_path %}
+        <img src="https://image.tmdb.org/t/p/w200{{ m.poster_path }}" alt="{{ m.title }} poster" style="border-radius:1rem;width:100%;height:240px;object-fit:cover;box-shadow:0 2px 8px #0002;" />
+        {% else %}
+        <img src="/static/img/default-poster.svg" alt="Poster placeholder" style="border-radius:1rem;width:100%;height:240px;object-fit:cover;box-shadow:0 2px 8px #0002;" />
+        {% endif %}
+  <div class="caption" style="text-align:center;margin-top:0.5rem;font-weight:700;font-size:1.1rem;color:#ff4081;text-shadow:0 2px 8px #0006;line-height:1.3;">{{ m.title }}</div>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% elif search_query %}
+<div style="text-align:center;color:#f87171;font-weight:600;margin-bottom:2rem;">No movies found for "{{ search_query }}".</div>
+{% endif %}
+
+<!-- Login Button Below Welcome Banner (only if not logged in) -->
+{% if not current_user.is_authenticated %}
+<div style="width:100%;text-align:center;margin-bottom:1.5rem;">
+  <a href="{{ url_for('login') }}" class="btn" style="background:#ff4081;color:#fff;padding:0.75rem 2rem;border-radius:2rem;font-weight:700;font-size:1.1rem;text-decoration:none;box-shadow:0 2px 8px #0002;transition:background 0.2s;">🔑 Login</a>
+</div>
+{% endif %}
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1>🎬 New This Week</h1>
+  <p class="sub">Fresh releases from the past 7 days</p>
+</section>
+
+<!-- Genre Film Reels -->
+{% for genre, gmovies in genre_movies.items() %}
+<section class="genre-block">
+  <h2 class="genre-title">{{ genre }}</h2>
+  <div class="film-reel">
+    <div class="reel-track">
+      {% set seen_ids = [] %}
+      {% set shown = 0 %}
+      {% for m in gmovies %}
+        {% if m.id not in seen_ids and shown < 20 %}
+          {% set _ = seen_ids.append(m.id) %}
+          <article class="reel-card">
+            <a href="{{ url_for('movie_page', movie_id=m.id) }}">
+              {% if m.poster_path %}
+              <img src="https://image.tmdb.org/t/p/w200{{ m.poster_path }}" alt="{{ m.title }} poster" />
+              {% else %}
+              <img src="/static/img/default-poster.svg" alt="Poster placeholder" />
+              {% endif %}
+              <div class="caption">
+                <span>{{ m.title }}</span>
+              </div>
+            </a>
+          </article>
+          {% set shown = shown + 1 %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endfor %}
+
+
+<!-- Full Grid of All Movies -->
+<section class="all-movies">
+  <h2>✨ All Recent Movies</h2>
+  <div class="grid">
+    {% for m in movies %}
+    <article class="card">
+      <div class="poster">
+        <a href="{{ url_for('movie_page', movie_id=m.id) }}">
+          {% if m.poster_path %}
+          <img src="https://image.tmdb.org/t/p/w500{{ m.poster_path }}" alt="{{ m.title }} poster" />
+          {% else %}
+          <img src="https://via.placeholder.com/500x750?text=No+Poster" alt="Poster placeholder" />
+          {% endif %}
+        </a>
+      </div>
+      <div class="card-body">
+        <h3>{{ m.title }}</h3>
+        <p>{{ m.overview[:100] }}...</p>
+        <p class="meta">{{ m.release_date }} • ⭐ {{ m.vote_average }}/10</p>
+      
+        {% if current_user.is_authenticated %}
+        <a class="btn" href="{{ url_for('movie_page', movie_id=m.id) }}">🎟 Book Now</a>
+        {% else %}
+        <button class="btn" onclick="showLoginPopup()">🎟 Book Now</button>
+        {% endif %}
+
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

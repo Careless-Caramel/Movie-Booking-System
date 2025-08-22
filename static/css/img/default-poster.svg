@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" fill="#11161d"/>
+  <rect x="0" y="0" width="400" height="600" fill="url(#g)"/>
+  <g fill="#94a3b8" font-family="Inter, Arial, sans-serif" text-anchor="middle">
+    <text x="200" y="290" font-size="28" font-weight="800">MOVIE</text>
+    <text x="200" y="330" font-size="18">Poster</text>
+  </g>
+</svg>
